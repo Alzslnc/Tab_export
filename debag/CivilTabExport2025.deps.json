@@ -1,0 +1,91 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "CivilTabExport2025/1.0.0": {
+        "dependencies": {
+          "Speckle.Civil3D.API": "2025.0.0"
+        },
+        "runtime": {
+          "CivilTabExport2025.dll": {}
+        }
+      },
+      "Speckle.AutoCAD.API/2025.0.0": {
+        "runtime": {
+          "lib/net8.0/AcCui.dll": {
+            "assemblyVersion": "25.0.0.0",
+            "fileVersion": "25.0.72.0"
+          },
+          "lib/net8.0/AdWindows.dll": {
+            "assemblyVersion": "5.1.1.1",
+            "fileVersion": "5.1.1.1"
+          },
+          "lib/net8.0/accoremgd.dll": {
+            "assemblyVersion": "25.0.0.0",
+            "fileVersion": "25.0.72.0"
+          },
+          "lib/net8.0/acdbmgd.dll": {
+            "assemblyVersion": "25.0.0.0",
+            "fileVersion": "25.0.72.0"
+          },
+          "lib/net8.0/acdbmgdbrep.dll": {
+            "assemblyVersion": "25.0.0.0",
+            "fileVersion": "25.0.72.0"
+          },
+          "lib/net8.0/acmgd.dll": {
+            "assemblyVersion": "25.0.0.0",
+            "fileVersion": "25.0.72.0"
+          }
+        }
+      },
+      "Speckle.Civil3D.API/2025.0.0": {
+        "dependencies": {
+          "Speckle.AutoCAD.API": "2025.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/AecBaseMgd.dll": {
+            "assemblyVersion": "8.7.49.0",
+            "fileVersion": "8.7.49.0"
+          },
+          "lib/net8.0/AecPropDataMgd.dll": {
+            "assemblyVersion": "8.7.49.0",
+            "fileVersion": "8.7.49.0"
+          },
+          "lib/net8.0/AeccDbMgd.dll": {
+            "assemblyVersion": "13.7.0.154",
+            "fileVersion": "13.7.154.0"
+          },
+          "lib/net8.0/AeccPressurePipesMgd.dll": {
+            "assemblyVersion": "13.7.0.154",
+            "fileVersion": "13.7.154.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CivilTabExport2025/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Speckle.AutoCAD.API/2025.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dqEgZ+bTqAG0tx0WwdnTZcbNKH2igzhOr3SMXtRYai7yIqXiz5btZ4Mf2bmfxbmxLucww3GKVpdZoI+PSZlMuQ==",
+      "path": "speckle.autocad.api/2025.0.0",
+      "hashPath": "speckle.autocad.api.2025.0.0.nupkg.sha512"
+    },
+    "Speckle.Civil3D.API/2025.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zWxdzk7M2JE1+PgIpGrCycDUwbmTqJ+YCNMaJPbjUgVKoAiI5w7Ou9ynbFgmQkRuYrkTflbL+s799Fw62PJixQ==",
+      "path": "speckle.civil3d.api/2025.0.0",
+      "hashPath": "speckle.civil3d.api.2025.0.0.nupkg.sha512"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>TabExport</RootNamespace>
+  </PropertyGroup>
+
+
+<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+   <OutDir>..\TabExport.bundle\contents\</OutDir>
+   <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+   <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+</PropertyGroup>
+
+
+<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+   <OutDir>..\debag\</OutDir>
+   <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+   <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+</PropertyGroup>
+
+
+<ItemGroup>
+  <Compile Include="..\..\BaseFunction\BaseClasses\BaseGeometryClass.cs" Link="Base\BaseGeometryClass.cs" />
+  <Compile Include="..\..\BaseFunction\BaseClasses\BaseGetObjectClass.cs" Link="Base\BaseGetObjectClass.cs" />
+  <Compile Include="..\..\BaseFunction\BaseClasses\BaseWPF.cs" Link="Base\BaseWPF.cs" />
+  <Compile Include="..\..\BaseFunction\BaseClasses\BaseXMLClass.cs" Link="Base\BaseXMLClass.cs" />
+  <Compile Include="..\..\BaseFunction\BaseClasses\TextBounds.cs" Link="Base\TextBounds.cs" />
+</ItemGroup>
+
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>6</VersionMinor>
+      <VersionMajor>1</VersionMajor>
+      <Guid>00020813-0000-0000-c000-000000000046</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoCAD.NET" Version="25.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Base\" />
+  </ItemGroup>
+
+</Project>
