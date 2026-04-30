@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TabExport.Data
 {
@@ -10,7 +6,7 @@ namespace TabExport.Data
     {       
         public List<RangeClass> Rows { get; set; } = new List<RangeClass>();
         public List<RangeClass> Columns { get; set; } = new List<RangeClass>();
-        public DataCellClass[,] Cells { get; set; }
+        public DataCellClass[,] Cells { get; set; } = new DataCellClass[1,1];
     }
     public class DataCellClass
     {
@@ -23,6 +19,7 @@ namespace TabExport.Data
         public int EndColumn { get; set; } = 0;
         public List<TextDataClass> TextDataClasses { get; set; } = new List<TextDataClass> ();
         public bool Checked { get; set; } = false;
+        public bool Blocked { get; set; } = false;
     }
 
     public class RangeClass

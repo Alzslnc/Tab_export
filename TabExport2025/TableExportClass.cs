@@ -1,97 +1,114 @@
-﻿using System;
+﻿using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Geometry;
+using BaseFunction;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BaseFunction;
-using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.DatabaseServices;
 using TabExport.Data;
-using Autodesk.AutoCAD.Geometry;
 
 namespace TabExport
 {
     
-    public class TestClass
-    {
-        [CommandMethod("TableTest")]
-        public void Start()
+    public static class TableExportClass
+    {      
+        public static void Start()
         {
+            if (!BaseGetObjectClass.TryGetIntFromUser(out int msl, Settings.Settings.Default.MaxStringLength, 1, null, "Ограничение числа символов в одной строке: ")) return;
+
+            Settings.Settings.Default.MaxStringLength = msl;
+            Settings.Settings.Save();
+
             if (!BaseGetObjectClass.TryGetObjectsIds(out List<ObjectId> ids, new List<Type> { typeof(Line), typeof(Polyline), typeof(DBText), typeof(MText) })) return;
-
+              
             using (Transaction tr = HostApplicationServices.WorkingDatabase.TransactionManager.StartTransaction())
-            {                 
-                List<TextDataClass> texts = new List<TextDataClass>();               
+            {
                 List<Line> lines = new List<Line>();
+                try
+                {
+                    //получаем исходные данные
+                    GetObjects(tr, ids, out List<TextDataClass> texts, out lines);
 
-                List<double> textHeights = new List<double>();
+                    //если нет текстов или линий то прекращаем
+                    if (lines.Count == 0 || texts.Count == 0) return;
 
-                foreach (ObjectId id in ids)
-                { 
-                    Entity entity = tr.GetObject(id, OpenMode.ForRead, false, true) as Entity;
+                    //формируем таблицу
+                    TableStructureClass tableStructure = CreateTableStructure(texts, lines);
 
-                    if (entity is DBText bText)
-                    {
-                        TextDataClass textData = new TextDataClass { TextHeight = bText.Height, VerticalValue = bText.Rotation > 1 && bText.Rotation < 2, Value = bText.TextString };
-                        Polyline ex = bText.CreatePolyline();
-                        textData.X = (ex.GeometricExtents.MaxPoint.X - ex.GeometricExtents.MinPoint.X) / 2;
-                        textData.Y = (ex.GeometricExtents.MaxPoint.Y - ex.GeometricExtents.MinPoint.Y) / 2;
-                        ex?.Dispose();
-                        texts.Add(textData);
-                    }
-                    else if (entity is MText mText)
-                    {
-                        using (DBObjectCollection collection = new DBObjectCollection())
-                        {
-                            mText.Explode(collection);
+                    //если таблица не сформировалась то прекращаем
+                    if (tableStructure.Columns.Count < 1) return;
 
-                            foreach (DBObject dBObject in collection)
-                            {
-                                if (dBObject is DBText dBText)
-                                {
-                                    TextDataClass textData = new TextDataClass { TextHeight = dBText.Height, VerticalValue = dBText.Rotation > 1 && dBText.Rotation < 2, Value = dBText.TextString };
-                                    Polyline ex = dBText.CreatePolyline();
-                                    textData.X = (ex.GeometricExtents.MaxPoint.X - ex.GeometricExtents.MinPoint.X) / 2;
-                                    textData.Y = (ex.GeometricExtents.MaxPoint.Y - ex.GeometricExtents.MinPoint.Y) / 2;
-                                    ex?.Dispose();
-                                    texts.Add(textData);
-                                }
-                                dBObject?.Dispose();
-                            }
-                        }                        
-                    }
-                    else if (entity is Line line)
-                    {
-                        lines.Add(new Line(line.StartPoint.Z0(), line.EndPoint.Z0()));
-                    }
-                    else if (entity is Polyline poly)
-                    {
-                        using (DBObjectCollection collection = new DBObjectCollection())
-                        {
-                            poly.Explode(collection);
-                            foreach (DBObject dBObject in collection)
-                            {
-                                if (dBObject is Line l) lines.Add(new Line(l.StartPoint.Z0(), l.EndPoint.Z0()));
-                                else dBObject?.Dispose();                                        
-                            }
-                        }
-                    }
+                    //создаем эксель документ
+                    ExcelClass.CreateExcelDocument.Create(tableStructure);
                 }
-
-                if (lines.Count == 0 || texts.Count == 0) return;
-
-                TableStructureClass tableStructure = CreateTableStructure(texts, lines);
-
-
-
-                //так как в списке могут быть результаты расчленения полилиний диспозим все
-                foreach (Curve curve in lines) curve?.Dispose();
+                finally
+                {
+                    //очищаем временно созданные объекты
+                    foreach (Curve curve in lines) curve?.Dispose();
+                }
 
                 tr.Commit();
             }
         }
+        public static void GetObjects(Transaction tr, List<ObjectId> ids, out List<TextDataClass> texts, out List<Line> lines)
+        {
+            texts = new List<TextDataClass>();
+            lines = new List<Line>();
 
-        public TableStructureClass CreateTableStructure(List<TextDataClass> texts, List<Line> lines)
+            foreach (ObjectId id in ids)
+            {
+                Entity entity = tr.GetObject(id, OpenMode.ForRead, false, true) as Entity;
+
+                if (entity is DBText bText)
+                {
+                    string value = bText.TextString.Trim();
+                    if (string.IsNullOrEmpty(value)) continue;
+                    TextDataClass textData = new TextDataClass { TextHeight = bText.Height, VerticalValue = bText.Rotation > 1 && bText.Rotation < 2, Value = value };
+                    Point3d center = GetTextCenter(bText);
+                    textData.X = center.X;
+                    textData.Y = center.Y;
+                    texts.Add(textData);
+                }
+                else if (entity is MText mText)
+                {
+                    using (DBObjectCollection collection = new DBObjectCollection())
+                    {
+                        mText.Explode(collection);
+
+                        foreach (DBObject dBObject in collection)
+                        {
+                            if (dBObject is DBText dBText)
+                            {
+                                string value = dBText.TextString.Trim();
+                                if (string.IsNullOrEmpty(value)) continue;
+                                TextDataClass textData = new TextDataClass { TextHeight = dBText.Height, VerticalValue = dBText.Rotation > 1 && dBText.Rotation < 2, Value = value };
+                                Point3d center = GetTextCenter(dBText);
+                                textData.X = center.X;
+                                textData.Y = center.Y;                                
+                                texts.Add(textData);
+                            }
+                            dBObject?.Dispose();
+                        }
+                    }
+                }
+                else if (entity is Line line)
+                {
+                    lines.Add(new Line(line.StartPoint.Z0(), line.EndPoint.Z0()));
+                }
+                else if (entity is Polyline poly)
+                {
+                    using (DBObjectCollection collection = new DBObjectCollection())
+                    {
+                        poly.Explode(collection);
+                        foreach (DBObject dBObject in collection)
+                        {
+                            if (dBObject is Line l) lines.Add(new Line(l.StartPoint.Z0(), l.EndPoint.Z0()));
+                            else dBObject?.Dispose();
+                        }
+                    }
+                }
+            }
+        }
+        public static TableStructureClass CreateTableStructure(List<TextDataClass> texts, List<Line> lines)
         {
             TableStructureClass result = new TableStructureClass();
 
@@ -108,7 +125,7 @@ namespace TabExport
             rowCoordinates.Sort();
             rowCoordinates.Reverse();
             rowCoordinates = GetRangeValues(rowCoordinates, uniteRange);
-
+           
             //создаем список рядов (ряды считаются сверху вниз и координаты идут на убыль)
             //первай
             result.Rows.Add(new RangeClass() { Position = result.Rows.Count, StartPosition = double.MaxValue, EndPosition = rowCoordinates[0] });
@@ -122,8 +139,9 @@ namespace TabExport
 
             //получаем координаты по горизонтали (координаты колонн)
             List<double> columnCoordinates = vertical.Select(x => x.StartPoint.X).Union(lines.Select(x => x.EndPoint.X)).ToList();
-            columnCoordinates.Sort();
+            columnCoordinates.Sort();     
             columnCoordinates = GetRangeValues(columnCoordinates, uniteRange);
+      
 
             //создаем список колонн
             //первая
@@ -176,10 +194,10 @@ namespace TabExport
                     for (int k = j + 1; k < result.Columns.Count - 1; k++)
                     {
                         //получаем координаты правой грани ячейки
-                        Point3d point = new Point3d(result.Columns[j].StartPosition, y, 0);
+                        Point3d point = new Point3d(result.Columns[k].StartPosition, y, 0);
 
                         //ищем ближайшую точку к грани
-                        Point3d closest = vertical.MinBy(x => x.GetClosestPointTo(point, false)).GetClosestPointTo(point, false);
+                        Point3d closest = vertical.OrderBy(t => t.GetClosestPointTo(point, false).DistanceTo(point)).First().GetClosestPointTo(point, false);                      
 
                         //если расстояние между точкой на грани и ближайшей точкой на линии меньше допуска то считаем что тут проходит граница, прерываем обход
                         if ((closest - point).Length < uniteRange) break;
@@ -189,6 +207,8 @@ namespace TabExport
 
                         //объединенную ячейку объявляем проверенной
                         result.Cells[i, k].Checked = true;
+                        result.Cells[i, k].Blocked = true;
+
                         //переносим тексты иэ добавленной ячейки к основной
                         dataCellClass.TextDataClasses.AddRange(result.Cells[i, k].TextDataClasses);
                         result.Cells[i, k].TextDataClasses.Clear();
@@ -201,7 +221,7 @@ namespace TabExport
                         Point3d point = new Point3d(x, result.Rows[k].StartPosition, 0);
 
                         //ищем ближайшую точку к грани
-                        Point3d closest = horizontal.MinBy(x => x.GetClosestPointTo(point, false)).GetClosestPointTo(point, false);
+                        Point3d closest = horizontal.OrderBy(t => t.GetClosestPointTo(point, false).DistanceTo(point)).First().GetClosestPointTo(point, false);
 
                         //если расстояние между точкой на грани и ближайшей точкой на линии меньше допуска то считаем что тут проходит граница, прерываем обход
                         if ((closest - point).Length < uniteRange) break;
@@ -214,25 +234,64 @@ namespace TabExport
                         {
                             //объединенную ячейку объявляем проверенной
                             result.Cells[k, g].Checked = true;
+                            result.Cells[k, g].Blocked = true;
+
                             //переносим тексты иэ добавленной ячейки к основной
                             dataCellClass.TextDataClasses.AddRange(result.Cells[k, g].TextDataClasses);
-                            result.Cells[k, g].TextDataClasses.Clear();
+                            result.Cells[k, g].TextDataClasses.Clear();                           
                         }
                     }
                 }
             }
 
+            //получаем объединенные тексты
+            foreach (DataCellClass cellClass in result.Cells)
+            {
+                cellClass.VerticalValue = cellClass.TextDataClasses.Any(x => x.VerticalValue);
+                if (!cellClass.Blocked) cellClass.Value = GetUniteText(cellClass.TextDataClasses);                
+            }
 
+            return result;            
+        }
+        private static string GetUniteText(List<TextDataClass> textDatas)
+        {             
+            string result = "";       
+            while (textDatas.Count > 0)
+            {
+                //определяем группу текстов в строке
+                TextDataClass first = textDatas.OrderByDescending(x => x.Y).First();
+                IEnumerable<TextDataClass> inGroup = textDatas.Where(x => Math.Abs(x.Y - first.Y) < first.TextHeight).OrderBy(x => x.X);
+
+                //задаем строку
+                string line = "";
+                //проходим по текстам в группе строки
+                foreach (TextDataClass textData in inGroup)
+                {
+                    //убирем текст из общего списка
+                    textDatas.Remove(textData);
+
+                    //разделяем на слова
+                    string[] strings = textData.Value.Split(new string[]{ " " }, StringSplitOptions.RemoveEmptyEntries);
+                    //проходим по словам
+                    foreach (string s in strings)
+                    {
+                        //если длина строки вместе с новым словом больше максимально заданной - добавляем строку к тексту и обнуляем ее
+                        if (!string.IsNullOrEmpty(line) && (line.Length + 1 + s.Length) > Settings.Settings.Default.MaxStringLength)
+                        {
+                            result += line.Trim() + Environment.NewLine;
+                            line = "";
+                        }   
+                        //добавляем слово к строке
+                        line += " " + s;
+                    }
+                }
+                //добавляем строку к тексту
+                result += line.Trim();
+                
+                //если еще присутствуют тексты то добавляем перенос строки
+                if (textDatas.Count() > 0) result += Environment.NewLine;
+            }
             return result;
-
-            //while (textDatas.Count() > 0)
-            //{ 
-            //    TextDataClass first = textDatas.MaxBy(x => x.Y);
-            //    IEnumerable<TextDataClass> classes = textDatas.Where(x => Math.Abs(x.Y - first.Y) < first.TextHeight / 2);
-            //    textDatas.;
-
-
-            //}
         }
         private static List<double> GetRangeValues(List<double> coordinates, double uniteRange)
         {
@@ -251,7 +310,13 @@ namespace TabExport
 
                 result.Add(unites.Average());
             }
+            result.Reverse();
             return result;
+        }
+        private static Point3d GetTextCenter(DBText text)
+        { 
+            Vector3d vector = text.GeometricExtents.MaxPoint - text.GeometricExtents.MinPoint;
+            return text.GeometricExtents.MinPoint + vector / 2;
         }
     }
 }

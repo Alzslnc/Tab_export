@@ -80,10 +80,13 @@
     <Reference Include="System.Data.DataSetExtensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -93,6 +96,42 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\BaseFunction\BaseClasses\AddButtons.cs">
+      <Link>Base\AddButtons.cs</Link>
+    </Compile>
+    <Compile Include="..\..\BaseFunction\BaseClasses\BaseGeometryClass.cs">
+      <Link>Base\BaseGeometryClass.cs</Link>
+    </Compile>
+    <Compile Include="..\..\BaseFunction\BaseClasses\BaseGetObjectClass.cs">
+      <Link>Base\BaseGetObjectClass.cs</Link>
+    </Compile>
+    <Compile Include="..\..\BaseFunction\BaseClasses\BaseWPF.cs">
+      <Link>Base\BaseWPF.cs</Link>
+    </Compile>
+    <Compile Include="..\..\BaseFunction\BaseClasses\BaseXMLClass.cs">
+      <Link>Base\BaseXMLClass.cs</Link>
+    </Compile>
+    <Compile Include="..\..\BaseFunction\BaseClasses\TextBounds.cs">
+      <Link>Base\TextBounds.cs</Link>
+    </Compile>
+    <Compile Include="..\TabExport2025\Data\TableStructureClass.cs">
+      <Link>Data\TableStructureClass.cs</Link>
+    </Compile>
+    <Compile Include="..\TabExport2025\ExcelClass\CreateExcelDocument.cs">
+      <Link>ExcelClass\CreateExcelDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\TabExport2025\ribbon\CreateButtons.cs">
+      <Link>ribbon\CreateButtons.cs</Link>
+    </Compile>
+    <Compile Include="..\TabExport2025\ribbon\Start.cs">
+      <Link>ribbon\Start.cs</Link>
+    </Compile>
+    <Compile Include="..\TabExport2025\Settings\Settings.cs">
+      <Link>Settings\Settings.cs</Link>
+    </Compile>
+    <Compile Include="..\TabExport2025\TableExportClass.cs">
+      <Link>TableExportClass.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

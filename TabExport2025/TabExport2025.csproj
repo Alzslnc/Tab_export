@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>TabExport</RootNamespace>
   </PropertyGroup>
 
@@ -25,6 +25,7 @@
 
 
 <ItemGroup>
+  <Compile Include="..\..\BaseFunction\BaseClasses\AddButtons.cs" Link="Base\AddButtons.cs" />
   <Compile Include="..\..\BaseFunction\BaseClasses\BaseGeometryClass.cs" Link="Base\BaseGeometryClass.cs" />
   <Compile Include="..\..\BaseFunction\BaseClasses\BaseGetObjectClass.cs" Link="Base\BaseGetObjectClass.cs" />
   <Compile Include="..\..\BaseFunction\BaseClasses\BaseWPF.cs" Link="Base\BaseWPF.cs" />
