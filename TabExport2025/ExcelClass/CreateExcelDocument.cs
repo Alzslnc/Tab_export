@@ -52,7 +52,7 @@ namespace TabExport.ExcelClass
             worksheet.Name = worksheet_num.ToString();
 
             //получаем область таблицы
-            Excel.Range table = worksheet.get_Range((Excel.Range)worksheet.Cells[2, 2], (Excel.Range)worksheet.Cells[tableStructure.Rows.Count - 1, tableStructure.Columns.Count - 1]);
+            Excel.Range table = worksheet.get_Range((Excel.Range)worksheet.Cells[2, 2], (Excel.Range)worksheet.Cells[tableStructure.Cells.GetLength(0) - 1, tableStructure.Cells.GetLength(1) - 1]);
 
             table.Rows.RowHeight = 50;
             table.Columns.ColumnWidth = 100;
@@ -100,8 +100,8 @@ namespace TabExport.ExcelClass
                 table.Borders.Weight = Excel.XlBorderWeight.xlThin;
                 table.Borders.Color =  Color.Black;
 
-                table = worksheet.get_Range((Excel.Range)worksheet.Cells[1, 1], (Excel.Range)worksheet.Cells[tableStructure.Rows.Count, tableStructure.Columns.Count]);  
-               
+                table = worksheet.get_Range((Excel.Range)worksheet.Cells[1, 1], (Excel.Range)worksheet.Cells[tableStructure.Cells.GetLength(0), tableStructure.Cells.GetLength(1)]);  
+              
                 table.Cells.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter; 
                 table.Cells.VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
 

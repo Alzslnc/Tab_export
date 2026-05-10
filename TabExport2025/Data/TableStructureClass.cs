@@ -36,6 +36,7 @@ namespace TabExport.Data
         public double Y { get; set; } = 0;
         public string Value { get; set; } = string.Empty;
         public bool VerticalValue { get; set; } = false;
+        public Autodesk.AutoCAD.Geometry.PolylineCurve2d Extents { get; set; } 
     }
     
    

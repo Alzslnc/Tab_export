@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -22,6 +22,20 @@
    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 </PropertyGroup>
 
+
+<ItemGroup>
+  <Compile Include="..\..\BaseFunction\BaseClasses\AddButtons.cs" Link="Base\AddButtons.cs" />
+  <Compile Include="..\..\BaseFunction\BaseClasses\BaseGeometryClass.cs" Link="Base\BaseGeometryClass.cs" />
+  <Compile Include="..\..\BaseFunction\BaseClasses\BaseGetObjectClass.cs" Link="Base\BaseGetObjectClass.cs" />
+  <Compile Include="..\..\BaseFunction\BaseClasses\BaseWPF.cs" Link="Base\BaseWPF.cs" />
+  <Compile Include="..\..\BaseFunction\BaseClasses\BaseXMLClass.cs" Link="Base\BaseXMLClass.cs" />
+  <Compile Include="..\..\BaseFunction\BaseClasses\TextBounds.cs" Link="Base\TextBounds.cs" />
+  <Compile Include="..\TabExport2025\Data\TableStructureClass.cs" Link="Data\TableStructureClass.cs" />
+  <Compile Include="..\TabExport2025\ExcelClass\CreateExcelDocument.cs" Link="ExcelClass\CreateExcelDocument.cs" />
+  <Compile Include="..\TabExport2025\Settings\Settings.cs" Link="Settings\Settings.cs" />
+  <Compile Include="..\TabExport2025\SupportClass.cs" Link="SupportClass.cs" />
+</ItemGroup>
+
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Interop.Excel">
       <WrapperTool>tlbimp</WrapperTool>
@@ -36,6 +50,13 @@
 
   <ItemGroup>
     <PackageReference Include="Speckle.Civil3D.API" Version="2025.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Base\" />
+    <Folder Include="Data\" />
+    <Folder Include="ExcelClass\" />
+    <Folder Include="Settings\" />
   </ItemGroup>
 
 </Project>

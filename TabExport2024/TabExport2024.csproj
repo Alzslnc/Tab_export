@@ -114,6 +114,9 @@
     <Compile Include="..\..\BaseFunction\BaseClasses\TextBounds.cs">
       <Link>Base\TextBounds.cs</Link>
     </Compile>
+    <Compile Include="..\TabExport2025\AcadTableExportClass.cs">
+      <Link>AcadTableExportClass.cs</Link>
+    </Compile>
     <Compile Include="..\TabExport2025\Data\TableStructureClass.cs">
       <Link>Data\TableStructureClass.cs</Link>
     </Compile>
@@ -128,6 +131,9 @@
     </Compile>
     <Compile Include="..\TabExport2025\Settings\Settings.cs">
       <Link>Settings\Settings.cs</Link>
+    </Compile>
+    <Compile Include="..\TabExport2025\SupportClass.cs">
+      <Link>SupportClass.cs</Link>
     </Compile>
     <Compile Include="..\TabExport2025\TableExportClass.cs">
       <Link>TableExportClass.cs</Link>

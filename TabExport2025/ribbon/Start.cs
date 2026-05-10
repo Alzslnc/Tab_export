@@ -8,6 +8,11 @@ namespace TabExport
         public static void TableToExcel()
         {
             TableExportClass.Start();
-        }    
+        }
+        [CommandMethod("TableToExcel2")]
+        public static void TableToExcel2()
+        {
+            AcadTableExportClass.Start();
+        }
     }
 }

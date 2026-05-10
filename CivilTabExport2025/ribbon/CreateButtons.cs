@@ -2,7 +2,7 @@
 using BaseFunction;
 using System.Collections.Generic;
 
-namespace TabExport.Ribbon
+namespace CivilTabExport.Ribbon
 {
     public class ExampleRibbon : IExtensionApplication
     {
@@ -18,10 +18,8 @@ namespace TabExport.Ribbon
             StartEvents startEvents = new StartEvents();
             
             startEvents.Buttons.Add(new Button("nCommand", "Таблица",
-                new List<ButtonCommand> { new ButtonCommand("TableToExcel", "Экспорт примитивов", "Экспортирует в эксель таблицы из выбранных примитивов."), }));
-            startEvents.Buttons.Add(new Button("nCommand", "Таблица",
-                new List<ButtonCommand> { new ButtonCommand("TableToExcel2", "Экспорт таблицы ACad", "Экспортирует в эксель таблицы Autocad."), }));
-
+                new List<ButtonCommand> { new ButtonCommand("TableToExcel3", "Экспорт таблицы Civil", "Экспортирует в эксель таблицы Civil. Не работает на разделенные таблицы."), }));
+           
             startEvents.Initialize();
         }
         private void CountMenus()
