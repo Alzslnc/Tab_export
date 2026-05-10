@@ -5,24 +5,29 @@
 
 <CompanyDetails Name="zzz" Email="alzslnc@gmail.com"/>
 
-<Components Description="ACad 2024-">
-	<RuntimeRequirements OS="Win64" SeriesMax="24.3"/>
-<ComponentEntry ModuleName="./Contents/TabExport2024.dll"/>
-</Components>
-
-<Components Description="ACad 2025+">
-	<RuntimeRequirements OS="Win64" SeriesMin="25.0"/>
-<ComponentEntry ModuleName="./Contents/TabExport2025.dll"/>
-</Components>
-
 <Components Description="Civil 2024-">
 	<RuntimeRequirements OS="Win64" Platform="Civil3D" SeriesMax="24.3"/>
 <ComponentEntry ModuleName="./Contents/CivilTabExport2024.dll"/>
+
 </Components>
 
 <Components Description="Civil 2025+">
 	<RuntimeRequirements OS="Win64" Platform="Civil3D" SeriesMin="25.0"/>
-<ComponentEntry ModuleName="./Contents/CivilTabExportV2025.dll"/>
+<ComponentEntry ModuleName="./Contents/CivilTabExport2025.dll"/>
+
 </Components>
+
+<Components Description="ACad 2024-" Platform="ACAD | Civil3D">
+	<RuntimeRequirements OS="Win64" SeriesMax="24.3"/>
+<ComponentEntry ModuleName="./Contents/TabExport2024.dll"/>
+</Components>
+
+<Components Description="ACad 2025+" Platform="ACAD | Civil3D">
+	<RuntimeRequirements OS="Win64" SeriesMin="25.0"/>
+<ComponentEntry ModuleName="./Contents/TabExport2025.dll"/>
+</Components>
+
+
+
 
 </ApplicationPackage>
