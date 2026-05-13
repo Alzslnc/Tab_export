@@ -29,6 +29,7 @@
   <Compile Include="..\..\BaseFunction\BaseClasses\BaseGetObjectClass.cs" Link="Base\BaseGetObjectClass.cs" />
   <Compile Include="..\..\BaseFunction\BaseClasses\BaseWPF.cs" Link="Base\BaseWPF.cs" />
   <Compile Include="..\..\BaseFunction\BaseClasses\BaseXMLClass.cs" Link="Base\BaseXMLClass.cs" />
+  <Compile Include="..\..\BaseFunction\BaseClasses\ControlVersionClass.cs" Link="Base\ControlVersionClass.cs" />
   <Compile Include="..\..\BaseFunction\BaseClasses\TextBounds.cs" Link="Base\TextBounds.cs" />
   <Compile Include="..\TabExport2025\Data\TableStructureClass.cs" Link="Data\TableStructureClass.cs" />
   <Compile Include="..\TabExport2025\ExcelClass\CreateExcelDocument.cs" Link="ExcelClass\CreateExcelDocument.cs" />

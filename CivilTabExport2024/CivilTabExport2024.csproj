@@ -111,6 +111,9 @@
     <Compile Include="..\..\BaseFunction\BaseClasses\BaseXMLClass.cs">
       <Link>Base\BaseXMLClass.cs</Link>
     </Compile>
+    <Compile Include="..\..\BaseFunction\BaseClasses\ControlVersionClass.cs">
+      <Link>Base\ControlVersionClass.cs</Link>
+    </Compile>
     <Compile Include="..\..\BaseFunction\BaseClasses\TextBounds.cs">
       <Link>Base\TextBounds.cs</Link>
     </Compile>
