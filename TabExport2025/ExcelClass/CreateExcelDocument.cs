@@ -1,9 +1,10 @@
-﻿using System.Diagnostics;
-using TabExport.Data;
-using System.Linq;
-using Excel = Microsoft.Office.Interop.Excel;
-using System.Drawing;
+﻿using Autodesk.AutoCAD.DatabaseServices;
 using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
+using TabExport.Data;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace TabExport.ExcelClass
 {
@@ -54,8 +55,9 @@ namespace TabExport.ExcelClass
             //получаем область таблицы
             Excel.Range table = worksheet.get_Range((Excel.Range)worksheet.Cells[2, 2], (Excel.Range)worksheet.Cells[tableStructure.Cells.GetLength(0) - 1, tableStructure.Cells.GetLength(1) - 1]);
 
-            table.Rows.RowHeight = 50;
-            table.Columns.ColumnWidth = 100;
+            //устанавдиваем большой размер ячейки что бы переносы не влияли
+            table.Rows.RowHeight = 200;
+            table.Columns.ColumnWidth = 200;
 
             foreach (DataCellClass dataCell in tableStructure.Cells)
             {
@@ -110,6 +112,19 @@ namespace TabExport.ExcelClass
 
             }
             catch { }
+
+            //усталавливаем размер ячеек по умолчанию в тех местах где не выставилось по содержимому
+            for (int i = 1; i < tableStructure.Cells.GetLength(0) + 1; i++)
+            {
+                Excel.Range range = (Excel.Range)worksheet.Cells[i, 1];
+                if (range.RowHeight == 200) range.RowHeight = 14.4;
+            }
+
+            for (int i = 1; i < tableStructure.Cells.GetLength(1) + 1; i++)
+            {
+                Excel.Range range = (Excel.Range)worksheet.Cells[1, i];
+                if (range.ColumnWidth == 200) range.ColumnWidth = 8.11;
+            }
 
             excApp.UserControl = true;
             excApp.Visible = true;

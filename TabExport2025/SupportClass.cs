@@ -4,8 +4,6 @@ using BaseFunction;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TabExport.Data;
 
 namespace TabExport
@@ -32,31 +30,22 @@ namespace TabExport
             }
             else if (entity is MText mText)
             {
-                using (DBObjectCollection collection = new DBObjectCollection())
+                Polyline bounds = TextBounds.CreatePolyline(mText);
+                Point3d center = GetTextCenter(bounds);
+
+                texts.Add(new TextDataClass
                 {
-                    mText.Explode(collection);
+                    TextHeight = mText.TextHeight,
+                    VerticalValue = mText.Rotation > 1 && mText.Rotation < 2,
+                    Value = mText.Contents,
+                    Extents = GetExtents(bounds),  
+                    X = center.X,
+                    Y = center.Y,
+                    IsMtext = true,
+                    MText = mText
+                });
 
-                    foreach (DBObject dBObject in collection)
-                    {
-                        if (dBObject is DBText dBText)
-                        {
-                            string value = dBText.TextString;
-                            if (string.IsNullOrEmpty(value)) continue;
-                            Point3d center = GetTextCenter(dBText);
-
-                            texts.Add(new TextDataClass
-                            {
-                                TextHeight = dBText.Height,
-                                VerticalValue = dBText.Rotation > 1 && dBText.Rotation < 2,
-                                Value = value,
-                                Extents = GetExtents(dBText),
-                                X = center.X,
-                                Y = center.Y
-                            });
-                        }
-                        dBObject?.Dispose();
-                    }
-                }
+                bounds?.Dispose();
             }
             else if (entity is Line line)
             {
@@ -222,6 +211,42 @@ namespace TabExport
         }
         private static string GetUniteText(List<TextDataClass> textDatas, double uniteRange)
         {
+            //разделяем мтексты
+            for (int i = textDatas.Count - 1; i >= 0; i--)
+            {
+                TextDataClass textDataClass = textDatas[i];
+                if (!textDataClass.IsMtext) continue;
+
+                using (DBObjectCollection collection = new DBObjectCollection())
+                {
+                    textDataClass.MText.Explode(collection);
+
+                    foreach (DBObject dBObject in collection)
+                    {
+                        if (dBObject is DBText dBText)
+                        {
+                            string value = dBText.TextString;
+                            if (string.IsNullOrEmpty(value)) continue;
+                            Point3d center = GetTextCenter(dBText);
+
+                            textDatas.Add(new TextDataClass
+                            {
+                                TextHeight = dBText.Height,
+                                VerticalValue = dBText.Rotation > 1 && dBText.Rotation < 2,
+                                Value = value,
+                                Extents = GetExtents(dBText),
+                                X = center.X,
+                                Y = center.Y
+                            });
+                        }
+                        dBObject?.Dispose();
+                    }
+                }
+
+                textDatas.RemoveAt(i);
+            }
+
+            //получаем объединенный текст
             uniteRange /= 10;
 
             string result = "";
@@ -277,6 +302,9 @@ namespace TabExport
             }
             return result;
         }
+        /// <summary>
+        /// объединение рядом расположенных элементов
+        /// </summary>    
         private static List<double> GetRangeValues(List<double> coordinates, double uniteRange)
         {
             coordinates.ClearFromDoubles();
@@ -288,7 +316,11 @@ namespace TabExport
 
                 for (int i = coordinates.Count - 1; i >= 0; i--)
                 {
-                    if (Math.Abs(coordinates[i] - unites.Last()) < uniteRange) result.Add(coordinates[i]);
+                    if (Math.Abs(coordinates[i] - unites.Last()) < uniteRange)
+                    {
+                        unites.Add(coordinates[i]);
+                        coordinates.RemoveAt(i);
+                    } 
                     else break;
                 }
 
@@ -297,22 +329,22 @@ namespace TabExport
             result.Reverse();
             return result;
         }
-        private static Point3d GetTextCenter(DBText text)
+        private static Point3d GetTextCenter(Entity text)
         {
             Vector3d vector = text.GeometricExtents.MaxPoint - text.GeometricExtents.MinPoint;
             return text.GeometricExtents.MinPoint + vector / 2;
         }
-        private static PolylineCurve2d GetExtents(DBText text)
-        {
+        private static PolylineCurve2d GetExtents(Entity text)
+        {           
             return new PolylineCurve2d(new Point2dCollection(
-                new Point2d[]
-                {
+                    new Point2d[]
+                    {
                 new Point2d(text.GeometricExtents.MinPoint.X, text.GeometricExtents.MinPoint.Y),
                 new Point2d(text.GeometricExtents.MinPoint.X, text.GeometricExtents.MaxPoint.Y),
                 new Point2d(text.GeometricExtents.MaxPoint.X, text.GeometricExtents.MaxPoint.Y),
                 new Point2d(text.GeometricExtents.MaxPoint.X, text.GeometricExtents.MinPoint.Y),
                 new Point2d(text.GeometricExtents.MinPoint.X, text.GeometricExtents.MinPoint.Y)
-                }));
+                    }));
         }
     }
 }

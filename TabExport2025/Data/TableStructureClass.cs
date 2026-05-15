@@ -37,6 +37,8 @@ namespace TabExport.Data
         public string Value { get; set; } = string.Empty;
         public bool VerticalValue { get; set; } = false;
         public Autodesk.AutoCAD.Geometry.PolylineCurve2d Extents { get; set; } 
+        public bool IsMtext { get; set; } = false;
+        public Autodesk.AutoCAD.DatabaseServices.MText MText { get; set; } = null;
     }
     
    
